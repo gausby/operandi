@@ -1,10 +1,9 @@
 {
     "name": "operandi",
     "version": "0.0.1",
-    "private": true,
     "description": "A workflow library for Node",
     "author": "Martin Gausby <martin@gausby.dk>",
-    "repository": "git+ssh://git@gitolite:operandi.git",
+    "repository": "git@github.com:gausby/operandi.git",
     "main": "lib/operandi.js",
     "dependencies": {
     },
