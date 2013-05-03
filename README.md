@@ -8,7 +8,7 @@ It is designed to give the process back to the main node thread whenever it poss
 Other projects that does the same thing (and may suit your needs better) are:
 
   * [Async](https://github.com/caolan/async) by [Caolan](https://github.com/caolan/)
-  * [Node-seq](https://github.com/substack/node-seq) by [Substrack](https://github.com/substack/)
+  * [Node-seq](https://github.com/substack/node-seq) by [Substack](https://github.com/substack/)
   * [Node-series](https://github.com/BlueJeansAndRain/node-series) by [BlueJeansAndRain](https://github.com/BlueJeansAndRain/)
 
 
