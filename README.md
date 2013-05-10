@@ -12,70 +12,182 @@ Other projects that does the same thing (and may suit your needs better) are:
   * [Node-series](https://github.com/BlueJeansAndRain/node-series) by [BlueJeansAndRain](https://github.com/BlueJeansAndRain/)
 
 
-## List of Functions
-These are the functions Operandi supports.
+## Supported Functions
+Operandi in it current state supports two types of functions; control flow and a type that iterate a list and apply a function to each of the elements.
+
+Notice. I am thinking about changing the name of the *map*-functions to *each*, as they are iterating a collection and applying a function to each of the element in the input list, but it does not return a list with the result of each calculation. This might be added to the project later, but for now it is not really needed.
 
 
-### Serial Operations
-Will run the given functions in the order they are given and execute an optional callback function when done.
+### Control flow functions
+There are three types of control flow functions. `serial`, `parallel`, and `batch`.
 
 
-#### Serial
+#### `serial`
 Will execute every function, one at a time, and run an optional callback function when done.
 
+    var serial = require('operandi').serial;
+
+    // Every functions shall receive two arguments, `err` and `done`.
+    // When a function is done it shall report back to the scheduler by
+    // calling done
+    var listOfFunctions = [
+        function (err, done) {
+            // get data from file-system
+            done();
+        },
+        function (err, done) {
+            // run data through parser
+            done();
+        }
+        // ...
+    ];
+
     // will run every function in the array `listOfFunctions`,
-    // and execute `callback` when it is done.
-    operandi.serial(listOfFunctions, callback);
+    // and execute the optional `callback` when all the tasks are done.
+    serial(listOfFunctions, function() {
+        console.log('done');
+    });
+
+Use this when you need the tasks performed in precisely the order they are given.
 
 
-#### Map Serial
-Will execute a function on every element in the input list, one at a time, in the order they are given.
-
-    // will run `fn` on every element in the array `listOfElements`,
-    // and execute `callback` when it is done.
-    operandi.mapSerial(listOfElements, fn, callback);
-
-
-### Parralell Operations
-Will run the given functions simultaneously and execute an optional callback function when done.
-
-
-#### Parallel
+#### `parallel`
 Will execute every function, simultaneously, and run an optional callback function when done.
 
+    var parallel = require('operandi').parallel;
+
+    // Every functions shall receive two arguments, `err` and `done`.
+    // When a function is done it shall report back to the scheduler by
+    // calling `done`;
+    var listOfFunctions = [
+        function (err, done) {
+            // load data from network
+            done();
+        },
+        function (err, done) {
+            // load data from file-system
+            done();
+        },
+        function (err, done) {
+            // perform some other asynchronous task
+            done();
+        }
+        // ...
+    ];
+
     // will run every function in the array `listOfFunctions`,
-    // and execute `callback` when it is done.
-    operandi.parallel(listOfFunctions, callback);
+    // and execute the optional `callback` when all the tasks are done.
+    parallel(listOfFunctions, function() {
+        console.log('done');
+    });
+
+Use this if you don't need the functions to be executed in a specific order.
 
 
-#### Map Parallel
-Will execute a function on every element in the input list, simultaneously, and execute an optional callback function when done.
+#### `batch`
+Takes a list of functions and execute them, n functions at a time. When every function is done it will call an optional callback function. The `batch`-function is very similar to the `parallel`-function, but it will throttle the simultaneous running functions.
+
+    // Every functions shall receive two arguments, `err` and `done`.
+    // When a function is done it shall report back to the scheduler by
+    // calling `done`
+    var listOfFunctions = [
+        function (err, done) {
+            // get a JSON-feed via HTTP
+            done();
+        },
+        function (err, done) {
+            // get user data from database
+            done();
+        },
+        function (err, done) {
+            // get high scores
+            done();
+        }
+        // ...
+    ]
+
+    // will run every function in the array `listOfFunctions`, 2 at a time,
+    // and execute the optional `callback` when all the tasks are done.
+    operandi.batch(listOfFunctions, 2, , function() {
+        console.log('done');
+    });
+
+Use this when you deal with something asynchronous that has an upper limit, like opening a massive amount of files, in situations where the tasks are unrelated and can be performed in parallel.
+
+
+### Map functions
+Will iterate a list of items and execute a function on each of the items. They come in three varieties: `mapSerial`, `mapParallel`, and `mapBatch`.
+
+
+#### `mapSerial`
+Will execute a function on every element in the input list, one at a time, in the order they are given.
+
+    var mapSerial = require('mapSerial');
+    var arr = [1, 2, 3, 4, 5, 6];
+    var obj = [];
+
+    function square(numbers, key, done) {
+        // setImmediate to simulate something async
+        setImmediate(function() {
+            obj.push(numbers[key] * numbers[key]);
+            done();
+        });
+    }
 
     // will run `fn` on every element in the array `listOfElements`,
     // and execute `callback` when it is done.
-    operandi.mapParallel(listOfElements, fn, callback);
+    mapSerial(arr, square, function () {
+        console.log(obj); // [1, 4, 9, 16, 25, 36]
+        done();
+    });
+
+Use this when you need the list processed in precisely the order it is written.
 
 
-### Batching Operations
-Functions given to a batch operation will be run in parallel in batches of a given size. This is required if you hit some upper limit, like opening more that 1000 files at a time on a UNIX system.
+#### `mapParallel`
+Will execute a function on every element in the input list, simultaneously, and execute an optional callback function when done.
 
-The system should ensure that no more than the given batch size will be run simultaneously.
+    var mapParallel = require('operandi').mapParallel;
+    var arr = [1, 2, 3, 4, 5, 6];
+    var obj = [];
 
+    function pushToObjAfterRandomTimeout(numbers, current, done) {
+        setTimeout(function() {
+            obj.push(numbers[current]);
+            done();
+        }, 10 * Math.random());
+    }
 
-#### Batch
-Takes a list of functions and execute them, n functions at a time. When every function is done it will call an optional callback function.
-
-    // will run every function in the array `listOfFunctions`, 2 at a time,
+    // will run `fn` on every element in the array `listOfElements`,
     // and execute `callback` when it is done.
-    operandi.batch(listOfFunctions, 2, callback);
+    operandi.mapParallel(arr, pushToObjAfterRandomTimeout, function () {
+        console.log(obj); // something like [2, 4, 3, 5, 1, 6]
+        done();
+    });
+
+Use this if you don't need the list to be processed in a specific order.
 
 
-#### Map Batch
-Takes a list of elements, a function to execute on every element and execute them, n elements at a time. An optinal callback function will be called when every element has been processed.
+#### `mapBatch`
+Takes a list of elements, a function to execute on every element and execute them, n elements at a time. An optional callback function will be called when every element has been processed.
 
-    // will pass every element in the array `listOfElements` to mapOperation,
-    // 2 at a time, and execute `callback` when it is done.
-    operandi.mapBatch(listOfElements, mapOperation, 2, callback);
+    var mapBatch = require('operandi').mapBatch;
+    var arr = [1, 2, 3, 4, 5, 6];
+    var obj = [];
+
+    function pushToObjAfterRandomTimeout(numbers, current, done) {
+        setTimeout(function() {
+            obj.push(numbers[current]);
+            done();
+        }, 10 * Math.random());
+    }
+
+    operandi.mapBatch(arr, pushToObjAfterRandomTimeout, 2, function () {
+        console.log(obj); // something like: [ 2, 1, 4, 3, 5, 6 ]
+        done();
+    });
+
+Use this when you apply a function with something asynchronous that has an upper limit, like opening a massive amount of files, in situations where the execution order are non-essential, and can be performed in parallel.
 
 
 ### Execution context `this`
