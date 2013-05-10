@@ -23,5 +23,5 @@
         "start": "rlwrap node repl.js",
         "test": "buster test"
     },
-    "engine": "*"
+    "engines" : { "node" : ">=0.10.5" }
 }
