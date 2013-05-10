@@ -2,10 +2,10 @@
 /*jslint maxlen:140*/
 
 var buster = require('buster'),
-    map = require('../lib/map-parallel.js')
+    each = require('../lib/each-parallel.js')
 ;
 
-buster.testCase('A parallel map process', {
+buster.testCase('A parallel each process', {
     setUp: function () {
     },
     'should apply its method til all the elements in the input list': function (done) {
@@ -16,7 +16,7 @@ buster.testCase('A parallel map process', {
             done();
         }
 
-        map(list, function (list, key, done) {
+        each(list, function (list, key, done) {
             list[key] *= 2;
             done();
         }, cb);
@@ -31,7 +31,7 @@ buster.testCase('A parallel map process', {
             done();
         }
 
-        map(list, function (list, key, done) {
+        each(list, function (list, key, done) {
             setTimeout(function () {
                 step += 1;
                 list[key] = step;
@@ -47,7 +47,7 @@ buster.testCase('A parallel map process', {
             done();
         }
 
-        map(list, function (list, key, done) {
+        each(list, function (list, key, done) {
             list[key] = typeof list[key];
             done();
         }, cb);

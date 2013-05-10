@@ -15,8 +15,6 @@ Other projects that does the same thing (and may suit your needs better) are:
 ## Supported Functions
 Operandi in it current state supports two types of functions; control flow and a type that iterate a list and apply a function to each of the elements.
 
-Notice. I am thinking about changing the name of the *map*-functions to *each*, as they are iterating a collection and applying a function to each of the element in the input list, but it does not return a list with the result of each calculation. This might be added to the project later, but for now it is not really needed.
-
 
 ### Control flow functions
 There are three types of control flow functions. `serial`, `parallel`, and `batch`.
@@ -115,14 +113,14 @@ Takes a list of functions and execute them, n functions at a time. When every fu
 Use this when you deal with something asynchronous that has an upper limit, like opening a massive amount of files, in situations where the tasks are unrelated and can be performed in parallel.
 
 
-### Map functions
-Will iterate a list of items and execute a function on each of the items. They come in three varieties: `mapSerial`, `mapParallel`, and `mapBatch`.
+### Each functions
+Will iterate a list of items and execute a function on each of the items. They come in three varieties: `eachSerial`, `eachParallel`, and `eachBatch`.
 
 
-#### `mapSerial`
+#### `eachSerial`
 Will execute a function on every element in the input list, one at a time, in the order they are given.
 
-    var mapSerial = require('mapSerial');
+    var eachSerial = require('eachSerial');
     var arr = [1, 2, 3, 4, 5, 6];
     var obj = [];
 
@@ -136,7 +134,7 @@ Will execute a function on every element in the input list, one at a time, in th
 
     // will run `fn` on every element in the array `listOfElements`,
     // and execute `callback` when it is done.
-    mapSerial(arr, square, function () {
+    eachSerial(arr, square, function () {
         console.log(obj); // [1, 4, 9, 16, 25, 36]
         done();
     });
@@ -144,10 +142,10 @@ Will execute a function on every element in the input list, one at a time, in th
 Use this when you need the list processed in precisely the order it is written.
 
 
-#### `mapParallel`
+#### `eachParallel`
 Will execute a function on every element in the input list, simultaneously, and execute an optional callback function when done.
 
-    var mapParallel = require('operandi').mapParallel;
+    var eachParallel = require('operandi').eachParallel;
     var arr = [1, 2, 3, 4, 5, 6];
     var obj = [];
 
@@ -160,7 +158,7 @@ Will execute a function on every element in the input list, simultaneously, and 
 
     // will run `fn` on every element in the array `listOfElements`,
     // and execute `callback` when it is done.
-    operandi.mapParallel(arr, pushToObjAfterRandomTimeout, function () {
+    operandi.eachParallel(arr, pushToObjAfterRandomTimeout, function () {
         console.log(obj); // something like [2, 4, 3, 5, 1, 6]
         done();
     });
@@ -168,10 +166,10 @@ Will execute a function on every element in the input list, simultaneously, and 
 Use this if you don't need the list to be processed in a specific order.
 
 
-#### `mapBatch`
+#### `eachBatch`
 Takes a list of elements, a function to execute on every element and execute them, n elements at a time. An optional callback function will be called when every element has been processed.
 
-    var mapBatch = require('operandi').mapBatch;
+    var eachBatch = require('operandi').eachBatch;
     var arr = [1, 2, 3, 4, 5, 6];
     var obj = [];
 
@@ -182,7 +180,7 @@ Takes a list of elements, a function to execute on every element and execute the
         }, 10 * Math.random());
     }
 
-    operandi.mapBatch(arr, pushToObjAfterRandomTimeout, 2, function () {
+    operandi.eachBatch(arr, pushToObjAfterRandomTimeout, 2, function () {
         console.log(obj); // something like: [ 2, 1, 4, 3, 5, 6 ]
         done();
     });

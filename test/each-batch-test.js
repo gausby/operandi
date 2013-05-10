@@ -2,10 +2,10 @@
 /*jslint maxlen:140*/
 
 var buster = require('buster'),
-    map = require('../lib/map-batch.js')
+    each = require('../lib/each-batch.js')
 ;
 
-buster.testCase('A batch map process', {
+buster.testCase('A batch each process', {
     setUp: function () {
     },
     'should apply its method til all the elements in the input list': function (done) {
@@ -16,7 +16,7 @@ buster.testCase('A batch map process', {
             done();
         }
 
-        map(list, function (list, key, done) {
+        each(list, function (list, key, done) {
             list[key] *= 2;
             done();
         }, 1, cb);
@@ -31,7 +31,7 @@ buster.testCase('A batch map process', {
             done();
         }
 
-        map(list, function (list, key, done) {
+        each(list, function (list, key, done) {
             setTimeout(function () {
                 res.push(list[key]);
                 done();
@@ -46,7 +46,7 @@ buster.testCase('A batch map process', {
             done();
         }
 
-        map(list, function (list, key, done) {
+        each(list, function (list, key, done) {
             list[key] = typeof list[key];
             done();
         }, 10, cb);

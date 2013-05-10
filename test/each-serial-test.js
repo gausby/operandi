@@ -2,10 +2,10 @@
 /*jslint maxlen:140*/
 
 var buster = require('buster'),
-    map = require('../lib/map-serial.js')
+    each = require('../lib/each-serial.js')
 ;
 
-buster.testCase('A serial map process', {
+buster.testCase('A serial each process', {
     setUp: function () {
     },
     'should apply its method til all the elements in the input list': function (done) {
@@ -16,7 +16,7 @@ buster.testCase('A serial map process', {
             done();
         }
 
-        map(list, function (list, key, done) {
+        each(list, function (list, key, done) {
             list[key] *= 2;
             done();
         }, cb);
@@ -31,7 +31,7 @@ buster.testCase('A serial map process', {
             done();
         }
 
-        map(list, function (list, key, done) {
+        each(list, function (list, key, done) {
             step += 1;
             list[key] = step;
             setTimeout(done, Math.random() * 10);
