@@ -23,7 +23,8 @@ buster.testCase('A batch each process', {
     },
     'should process its list asynchronous': function (done) {
         var list = ['one', 'two', 'three', 'four'],
-            res = []
+            res = [],
+            capture
         ;
 
         function cb() {
@@ -31,11 +32,40 @@ buster.testCase('A batch each process', {
             done();
         }
 
+        // trap will 'trap' a callback and a number; every time a
+        // trap is 'released' it decrements the release number
+        // and run the callback when zero times is left.
+        //
+        // it simulate an asynchronous situation where the first
+        // item in the list hangs longer than all the other items.
+        function trap(fn, times) {
+            times = times || 0;
+
+            return {
+                release: function () {
+                    times -= 1;
+
+                    if (times === 0) {
+                        fn();
+                    }
+                }
+            };
+        }
+
         each(list, function (list, key, done) {
-            setTimeout(function () {
-                res.push(list[key]);
-                done();
-            }, key === 0 ? 10 : 1);
+            if (key === 0) {
+                capture = trap(function() {
+                    res.push(list[key]);
+                    done();
+                }, list.length - 1);
+            }
+            else {
+                setTimeout(function() {
+                    res.push(list[key]);
+                    capture.release();
+                    done();
+                }, 5 * Math.random());
+            }
         }, 2, cb);
     },
     'should be able to have undefined in its list': function (done) {
