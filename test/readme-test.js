@@ -68,6 +68,31 @@ buster.testCase('Claims made in the README.md', {
             // something like: [ 2, 1, 4, 3, 5, 6 ]
             done();
         });
+    },
+
+    'error handling': function (done) {
+        var serial = operandi.serial;
+        var message = '';
+
+        var process = [
+            function (done) {
+                message = 'First!';
+                done(new Error('The database broke!'));
+            },
+            function (done) {
+                message = 'Second!';
+                done();
+            }
+        ];
+
+        serial(process, function(err) {
+            if (err) {
+                assert.isTrue(err instanceof Error);
+                // handle error
+                // message: 'First!'
+            }
+            done();
+        });
     }
 
 });

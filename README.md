@@ -25,15 +25,15 @@ Will execute every function, one at a time, and run an optional callback functio
 
     var serial = require('operandi').serial;
 
-    // Every functions shall receive two arguments, `err` and `done`.
-    // When a function is done it shall report back to the scheduler by
-    // calling done
+    // Every functions shall receive one argument; `done`.
+    // When a function is done it shall report back to the scheduler
+    // by calling done.
     var listOfFunctions = [
-        function (err, done) {
+        function (done) {
             // get data from file-system
             done();
         },
-        function (err, done) {
+        function (done) {
             // run data through parser
             done();
         }
@@ -41,7 +41,8 @@ Will execute every function, one at a time, and run an optional callback functio
     ];
 
     // will run every function in the array `listOfFunctions`,
-    // and execute the optional `callback` when all the tasks are done.
+    // and execute the optional `callback` when all the tasks are
+    // done.
     serial(listOfFunctions, function() {
         console.log('done');
     });
@@ -54,19 +55,19 @@ Will execute every function, simultaneously, and run an optional callback functi
 
     var parallel = require('operandi').parallel;
 
-    // Every functions shall receive two arguments, `err` and `done`.
-    // When a function is done it shall report back to the scheduler by
-    // calling `done`;
+    // Every functions shall receive one argument; `done`.
+    // When a function is done it shall report back to the scheduler
+    // by calling `done`.
     var listOfFunctions = [
-        function (err, done) {
+        function (done) {
             // load data from network
             done();
         },
-        function (err, done) {
+        function (done) {
             // load data from file-system
             done();
         },
-        function (err, done) {
+        function (done) {
             // perform some other asynchronous task
             done();
         }
@@ -74,7 +75,8 @@ Will execute every function, simultaneously, and run an optional callback functi
     ];
 
     // will run every function in the array `listOfFunctions`,
-    // and execute the optional `callback` when all the tasks are done.
+    // and execute the optional `callback` when all the tasks are
+    // done.
     parallel(listOfFunctions, function() {
         console.log('done');
     });
@@ -85,28 +87,29 @@ Use this if you don't need the functions to be executed in a specific order.
 #### `batch`
 Takes a list of functions and execute them, n functions at a time. When every function is done it will call an optional callback function. The `batch`-function is very similar to the `parallel`-function, but it will throttle the simultaneous running functions.
 
-    // Every functions shall receive two arguments, `err` and `done`.
-    // When a function is done it shall report back to the scheduler by
-    // calling `done`
+    // Every functions shall receive one argument; `done`.
+    // When a function is done it shall report back to the scheduler
+    // by calling `done`.
     var listOfFunctions = [
-        function (err, done) {
+        function (done) {
             // get a JSON-feed via HTTP
             done();
         },
-        function (err, done) {
+        function (done) {
             // get user data from database
             done();
         },
-        function (err, done) {
+        function (done) {
             // get high scores
             done();
         }
         // ...
     ]
 
-    // will run every function in the array `listOfFunctions`, 2 at a time,
-    // and execute the optional `callback` when all the tasks are done.
-    operandi.batch(listOfFunctions, 2, , function() {
+    // will run every function in the array `listOfFunctions`, 2 at a
+    // time, and execute the optional `callback` when all the tasks
+    // are done.
+    operandi.batch(listOfFunctions, 2, function() {
         console.log('done');
     });
 
@@ -158,7 +161,7 @@ Will execute a function on every element in the input list, simultaneously, and 
 
     // will run `fn` on every element in the array `listOfElements`,
     // and execute `callback` when it is done.
-    operandi.eachParallel(arr, pushToObjAfterRandomTimeout, function () {
+    eachParallel(arr, pushToObjAfterRandomTimeout, function () {
         console.log(obj); // something like [2, 4, 3, 5, 1, 6]
         done();
     });
@@ -180,7 +183,7 @@ Takes a list of elements, a function to execute on every element and execute the
         }, 10 * Math.random());
     }
 
-    operandi.eachBatch(arr, pushToObjAfterRandomTimeout, 2, function () {
+    eachBatch(arr, pushToObjAfterRandomTimeout, 2, function () {
         console.log(obj); // something like: [ 2, 1, 4, 3, 5, 6 ]
         done();
     });
@@ -195,6 +198,38 @@ Every function supported by Operandi can easily be called with a different conte
     operandi.serial.call(this, [fn1, fn2, fn3], done);
 
 The callback function will also be called in the same scope.
+
+
+### The `done`-function and error handling
+When a step in a process is finished it have to report back to the scheduler by calling `done()`. This will start the next process in line or call the callback function when every process has been run.
+
+If you pass an argument to this function it will stop the entire process and call the given callback function with the error object as the first parameter. Examine the following example.
+
+    var serial = operandi.serial;
+    var message = '';
+
+    var process = [
+        function (done) {
+            message = 'First!';
+            done(new Error('The database broke!'));
+        },
+        function (done) {
+            // this will never be run.
+            message = 'Second!';
+            done();
+        }
+    ];
+
+    serial(process, function(err) {
+        if (err) {
+            assert.isTrue(err instanceof Error);
+            // handle error
+            console.log(message); // message: 'First!'
+        }
+        done();
+    });
+
+This works for the parallel operations as well, but processes that has been started will still have to finish. No new processes will be started though.
 
 
 ## Development

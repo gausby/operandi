@@ -51,9 +51,36 @@ buster.testCase('A serial each process', {
         var scope = { foo: 'bar' };
 
         each.call(scope, [1], function (numbers, number, done) { done(); }, function() {
-            assert.equals(scope, this);
+            assert.equals(this, scope);
             done();
         });
+    },
+
+    'should pass exceptions to its main callback': function (done) {
+        var scope = { foo: 'bar' };
+
+        each.call(scope, [1], function (numbers, number, done) { done(new Error('test')); }, function(err) {
+            assert.isTrue(err instanceof Error);
+            done();
+        });
+    },
+
+    'should stop calculations if a function throws an error': function (done) {
+        var scope = { foo: 'bar' }, result = 0;
+        function callback () {
+            assert.equals(result, 3);
+            done();
+        }
+
+        each.call(scope, [1,1,1,0,1], function (numbers, key, done) {
+            if (numbers[key]) {
+                result += numbers[key];
+                done();
+            }
+            else {
+                done(new Error('it was zero'));
+            }
+        }, callback);
     }
 
 });

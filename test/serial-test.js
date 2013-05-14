@@ -17,9 +17,9 @@ buster.testCase('A serial process', {
         }
 
         serial([
-            function (err, done) { rtn += 'a'; done(); },
-            function (err, done) { rtn += 'b'; done(); },
-            function (err, done) { rtn += 'c'; done(); }
+            function (done) { rtn += 'a'; done(); },
+            function (done) { rtn += 'b'; done(); },
+            function (done) { rtn += 'c'; done(); }
         ], cb);
 
     },
@@ -32,19 +32,19 @@ buster.testCase('A serial process', {
         }
 
         serial([
-            function (err, done) {
+            function (done) {
                 setTimeout(function() {
                     rtn += 'a';
                     done();
                 }, 20);
             },
-            function (err, done) {
+            function (done) {
                 setTimeout(function() {
                     rtn += 'b';
                     done();
                 }, 5);
             },
-            function (err, done) {
+            function (done) {
                 setTimeout(function() {
                     rtn += 'c';
                     done();
@@ -63,9 +63,9 @@ buster.testCase('A serial process', {
         }
 
         serial.apply(scope, [[
-            function (err, done) { this.a += '1'; done(); },
-            function (err, done) { this.a += '3'; done(); },
-            function (err, done) { this.a += '2'; done(); }
+            function (done) { this.a += '1'; done(); },
+            function (done) { this.a += '3'; done(); },
+            function (done) { this.a += '2'; done(); }
         ], cb]);
     },
     'should just call its callback if no functions is given': function (done) {
@@ -78,7 +78,7 @@ buster.testCase('A serial process', {
     'should call the callback with the same scope if a scope is given': function (done) {
         var scope = { foo: 'bar' };
 
-        serial.call(scope, [function(err, done) { done(); }], function () {
+        serial.call(scope, [function(done) { done(); }], function () {
             assert.equals(scope, this);
             done();
         });
@@ -95,7 +95,7 @@ buster.testCase('A serial process', {
 
     'should just end its job silently if no callback is given': function (done) {
         refute.exception(function () {
-            serial([function (err, done) { done(); }]);
+            serial([function (done) { done(); }]);
             done();
         });
     },
@@ -104,6 +104,7 @@ buster.testCase('A serial process', {
             serial();
         });
     },
+
     'should stop executing functions if one of them returns an error': function (done) {
         var test = 0;
 
@@ -114,27 +115,22 @@ buster.testCase('A serial process', {
 
         // using return instead of throw
         serial([
-            function (err, cb) {
-                if (err) return errorHandler();
+            function (cb) {
                 test += 1;
                 return cb();
             },
-            function (err, cb) {
-                if (err) return errorHandler();
+            function (cb) {
                 test += 1;
                 return cb();
             },
-            function (err, cb) {
-                if (err) return errorHandler();
+            function (cb) {
                 test += 1;
                 return cb(new Error('This should break the execution'));
             },
-            function (err, cb) {
-                if (err) return errorHandler();
+            function (cb) {
                 test += 1;
                 return cb();
             }
         ], errorHandler);
-
     }
 });

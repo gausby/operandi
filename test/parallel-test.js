@@ -15,10 +15,10 @@ buster.testCase('A parallel process', {
         }
 
         parallel([
-            function (err, done) { test += 1; done(); },
-            function (err, done) { test += 5; done(); },
-            function (err, done) { test += 4; done(); },
-            function (err, done) { test += 5; done(); }
+            function (done) { test += 1; done(); },
+            function (done) { test += 5; done(); },
+            function (done) { test += 4; done(); },
+            function (done) { test += 5; done(); }
         ], cb);
     },
     'should pass its scope to each function it gets': function (done) {
@@ -30,10 +30,10 @@ buster.testCase('A parallel process', {
         }
 
         parallel.apply(test, [[
-            function (err, done) { this.a += 7; done(); },
-            function (err, done) { this.a += 7; done(); },
-            function (err, done) { this.a += 3; done(); },
-            function (err, done) { this.a += 4; done(); }
+            function (done) { this.a += 7; done(); },
+            function (done) { this.a += 7; done(); },
+            function (done) { this.a += 3; done(); },
+            function (done) { this.a += 4; done(); }
         ], cb]);
 
     },
@@ -50,7 +50,7 @@ buster.testCase('A parallel process', {
     'should call the callback with the same scope if a scope is given': function (done) {
         var scope = { foo: 'bar' };
 
-        parallel.call(scope, [function(err, done) { done(); }], function () {
+        parallel.call(scope, [function(done) { done(); }], function () {
             assert.equals(scope, this);
             done();
         });
@@ -71,11 +71,56 @@ buster.testCase('A parallel process', {
             done();
         });
     },
+
     'should just end its task silently if no callback is given': function (done) {
         refute.exception(function () {
-            parallel([function (err, done) { done(); }]);
+            parallel([function (done) { done(); }]);
             done();
         });
-    }
+    },
 
+    'should stop executing functions if one of them returns an error': function (done) {
+        var returned = 0,
+            started = 0
+        ;
+
+        function errorHandler (err) {
+            assert.equals(returned, 3);
+            assert.equals(started, 4);
+            done();
+        }
+
+        // using return instead of throw
+        parallel([
+            function (cb) {
+                started += 1;
+                setTimeout(function() {
+                    returned += 1;
+                    return cb();
+                }, 50);
+            },
+            function (cb) {
+                started += 1;
+                setTimeout(function() {
+                    returned += 1;
+                    return cb();
+                },5);
+            },
+            function (cb) {
+                started += 1;
+                setTimeout(function() {
+                    returned += 1;
+                    return cb(new Error('test'));
+                },20);
+            },
+            function (cb) {
+                started += 1;
+                setTimeout(function() {
+                    returned += 1;
+                    return cb();
+                },5);
+            }
+        ], errorHandler);
+
+    }
 });

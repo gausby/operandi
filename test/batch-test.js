@@ -21,7 +21,7 @@ buster.testCase('A batch process', {
     'should call the callback with the same scope if a scope is given': function (done) {
         var scope = { foo: 'bar' };
 
-        batch.call(scope, [function(err, done) { done(); }], 10, function () {
+        batch.call(scope, [function(done) { done(); }], 10, function () {
             assert.equals(scope, this);
             done();
         });
@@ -36,9 +36,9 @@ buster.testCase('A batch process', {
         }
 
         batch([
-            function (err, done) { rtn += 'run'; done(); },
-            function (err, done) { rtn += 'run'; done(); },
-            function (err, done) { rtn += 'run'; done(); }
+            function (done) { rtn += 'run'; done(); },
+            function (done) { rtn += 'run'; done(); },
+            function (done) { rtn += 'run'; done(); }
         ], 3, cb);
     },
     'should never run more simultanious processes than specified': function (done) {
@@ -48,7 +48,7 @@ buster.testCase('A batch process', {
             i = 5
         ;
 
-        var fn = function (err, done) {
+        var fn = function (done) {
             setTimeout(function () {
                 rtn.push((new Date()).getTime());
                 done();

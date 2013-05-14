@@ -98,8 +98,15 @@ buster.testCase('A batch each process', {
             assert.equals(scope, this);
             done();
         });
+    },
+
+    'should pass exceptions to its main callback': function (done) {
+        var scope = { foo: 'bar' };
+
+        each.call(scope, [1], function (numbers, number, done) { done(new Error('test')); }, 10, function(err) {
+            assert.isTrue(err instanceof Error);
+            done();
+        });
     }
-
-
 
 });

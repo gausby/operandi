@@ -1,4 +1,4 @@
-/* global assert refute require setTimeout */
+/* global assert refute require setTimeout setImmediate */
 /*jslint maxlen:140*/
 
 var buster = require('buster'),
@@ -60,5 +60,43 @@ buster.testCase('A parallel each process', {
             assert.equals(scope, this);
             done();
         });
+    },
+
+    'should pass exceptions to its main callback': function (done) {
+        var scope = { foo: 'bar' };
+
+        each.call(scope, [1], function (numbers, number, done) { done(new Error('test')); }, function(err) {
+            assert.isTrue(err instanceof Error);
+            done();
+        });
+    },
+
+    'should stop calculations if a function throws an error': function (done) {
+        var scope = { foo: 'bar' },
+            result = 0,
+            started = 0
+        ;
+
+        function callback () {
+            assert.equals(started, 5);
+            assert.equals(result, 0);
+            done();
+        }
+
+        each.call(scope, [1,1,1,0,1], function (numbers, key, done) {
+            started += 1;
+
+            setImmediate(function() {
+                if (numbers[key]) {
+                    setImmediate(function() {
+                        result += numbers[key];
+                        done();
+                    });
+                }
+                else {
+                    done(new Error('it was zero'));
+                }
+            });
+        }, callback);
     }
 });
