@@ -222,7 +222,6 @@ If you pass an argument to this function it will stop the entire process and cal
 
     serial(process, function(err) {
         if (err) {
-            assert.isTrue(err instanceof Error);
             // handle error
             console.log(message); // message: 'First!'
         }
