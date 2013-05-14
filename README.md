@@ -194,6 +194,8 @@ Every function supported by Operandi can easily be called with a different conte
     // this within fn1, fn2, and fn3 will refer to the current context
     operandi.serial.call(this, [fn1, fn2, fn3], done);
 
+The callback function will also be called in the same scope.
+
 
 ## Development
 After cloning the project you will have to run `npm install` in the project root. This will install the various grunt plugins and other dependencies.

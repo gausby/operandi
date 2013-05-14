@@ -46,6 +46,25 @@ buster.testCase('A parallel process', {
 
         parallel([], cb);
     },
+
+    'should call the callback with the same scope if a scope is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        parallel.call(scope, [function(err, done) { done(); }], function () {
+            assert.equals(scope, this);
+            done();
+        });
+    },
+
+    'should call the callback with the same scope if a scope is given and no functions is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        parallel.call(scope, [], function () {
+            assert.equals(scope, this);
+            done();
+        });
+    },
+
     'should just call the noop function if no functions is given and no callback if given': function (done) {
         refute.exception(function () {
             parallel([]);

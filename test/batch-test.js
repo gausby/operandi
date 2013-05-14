@@ -8,6 +8,25 @@ var buster = require('buster'),
 buster.testCase('A batch process', {
     setUp: function () {
     },
+
+    'should call the callback with the same scope if a scope is given and no functions is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        batch.call(scope, [], 10, function () {
+            assert.equals(scope, this);
+            done();
+        });
+    },
+
+    'should call the callback with the same scope if a scope is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        batch.call(scope, [function(err, done) { done(); }], 10, function () {
+            assert.equals(scope, this);
+            done();
+        });
+    },
+
     'should apply its method til all the elements in the input list': function (done) {
         var rtn = '';
 

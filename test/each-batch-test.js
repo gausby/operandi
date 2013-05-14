@@ -80,5 +80,26 @@ buster.testCase('A batch each process', {
             list[key] = typeof list[key];
             done();
         }, 10, cb);
+    },
+
+    'should call the callback with the same scope if a scope is given and no list is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        each.call(scope, [], function () {}, 10, function() {
+            assert.equals(scope, this);
+            done();
+        });
+    },
+
+    'should call the callback with the same scope if a scope is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        each.call(scope, [1], function (numbers, number, done) { done(); }, 10, function() {
+            assert.equals(scope, this);
+            done();
+        });
     }
+
+
+
 });

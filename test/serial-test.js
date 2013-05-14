@@ -74,6 +74,25 @@ buster.testCase('A serial process', {
             done();
         });
     },
+
+    'should call the callback with the same scope if a scope is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        serial.call(scope, [function(err, done) { done(); }], function () {
+            assert.equals(scope, this);
+            done();
+        });
+    },
+
+    'should call the callback with the same scope if a scope is given and no functions is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        serial.call(scope, [], function () {
+            assert.equals(scope, this);
+            done();
+        });
+    },
+
     'should just end its job silently if no callback is given': function (done) {
         refute.exception(function () {
             serial([function (err, done) { done(); }]);

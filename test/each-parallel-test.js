@@ -51,5 +51,14 @@ buster.testCase('A parallel each process', {
             list[key] = typeof list[key];
             done();
         }, cb);
+    },
+
+    'should call the callback with the same scope if a scope is given and no list is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        each.call(scope, [1], function (numbers, number, done) { done(); }, function() {
+            assert.equals(scope, this);
+            done();
+        });
     }
 });

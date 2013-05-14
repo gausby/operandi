@@ -36,5 +36,24 @@ buster.testCase('A serial each process', {
             list[key] = step;
             setTimeout(done, Math.random() * 10);
         }, cb);
+    },
+
+    'should call the callback with the same scope if a scope is given and no list is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        each.call(scope, [], function () {}, function() {
+            assert.equals(scope, this);
+            done();
+        });
+    },
+
+    'should call the callback with the same scope if a scope is given': function (done) {
+        var scope = { foo: 'bar' };
+
+        each.call(scope, [1], function (numbers, number, done) { done(); }, function() {
+            assert.equals(scope, this);
+            done();
+        });
     }
+
 });
