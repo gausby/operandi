@@ -230,7 +230,7 @@ If you pass an argument to this function it will stop the entire process and cal
 
 This works for the parallel operations as well, but processes that has been started will still have to finish. No new processes will be started though.
 
-If you nest Operandi-functions, and use the parent `done` function as the call back of the child, the error will progress upwards, stopping all the parent-operations, and making it possible to handle errors in the topmost call—and you even use third-party error handler modules.
+If you nest Operandi-functions, and use the parent `done` function as the call back of the child, the error will progress upwards, stopping all the parent-operations, and making it possible to handle errors in the topmost call—and you can even use third-party error handler modules, if you are so inclined.
 
 
 ## Development
