@@ -206,29 +206,31 @@ When a step in a process is finished it have to report back to the scheduler by 
 If you pass an argument to this function it will stop the entire process and call the given callback function with the error object as the first parameter. Examine the following example.
 
     var serial = operandi.serial;
-    var message = '';
 
     var process = [
         function (done) {
-            message = 'First!';
             done(new Error('The database broke!'));
         },
         function (done) {
-            // this will never be run.
-            message = 'Second!';
+            console.log('this will never be run.');
             done();
         }
     ];
 
     serial(process, function(err) {
         if (err) {
-            // handle error
-            console.log(message); // message: 'First!'
+            try {
+                throw err;
+            }
+            catch (e) {
+                console.log(e.stack); // stack trace
+            }
         }
-        done();
     });
 
 This works for the parallel operations as well, but processes that has been started will still have to finish. No new processes will be started though.
+
+If you nest Operandi-functions, and use the parent `done` function as the call back of the child, the error will progress upwards, stopping all the parent-operations, and making it possible to handle errors in the topmost call—and you even use third-party error handler modules.
 
 
 ## Development
