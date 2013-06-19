@@ -117,7 +117,7 @@ Use this when you deal with something asynchronous that has an upper limit, like
 
 
 ### Each functions
-Will iterate a list of items and execute a function on each of the items. They come in three varieties: `eachSerial`, `eachParallel`, and `eachBatch`.
+Will iterate a list, or an object with key-values, of items and execute a function on each of the items. They come in three varieties: `eachSerial`, `eachParallel`, and `eachBatch`.
 
 
 #### `eachSerial`

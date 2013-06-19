@@ -1,6 +1,6 @@
 {
     "name": "operandi",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "A workflow library for Node",
     "author": "Martin Gausby <martin@gausby.dk>",
     "repository": "git@github.com:gausby/operandi.git",

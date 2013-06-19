@@ -98,5 +98,20 @@ buster.testCase('A parallel each process', {
                 }
             });
         }, callback);
+    },
+
+    'should apply each function to each key-value pair in an object': function (done) {
+        var input = { a: 'a', b: 'b', c: 'c' };
+
+        var callback = function(err) {
+            assert.equals(input, {a: 'aa', b: 'bb', c: 'cc'});
+            done();
+        };
+
+        each(input, function (obj, key, done) {
+            obj[key] = obj[key] + obj[key];
+            done();
+        }, callback);
     }
+
 });
