@@ -5,6 +5,9 @@ var buster = require('buster'),
     each = require('../lib/each-parallel.js')
 ;
 
+var assert = buster.referee.assert;
+var refute = buster.referee.refute;
+
 buster.testCase('A parallel each process', {
     setUp: function () {
     },

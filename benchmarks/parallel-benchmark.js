@@ -3,7 +3,8 @@
 var parallel = require('../lib/parallel');
 
 module.exports = {
-    'Parallel processes': function(done) {
+    'name': 'Parallel processes',
+    'fn': function(done) {
         var test = function (done) {
             switch (Math.round(Math.random())) {
                 case 0:

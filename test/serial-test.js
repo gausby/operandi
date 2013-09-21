@@ -5,6 +5,9 @@ var buster = require('buster'),
     serial = require('../lib/serial')
 ;
 
+var assert = buster.referee.assert;
+var refute = buster.referee.refute;
+
 buster.testCase('A serial process', {
     setUp: function () {
     },

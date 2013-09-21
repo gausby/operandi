@@ -3,7 +3,8 @@
 var batch = require('../lib/batch');
 
 module.exports = {
-    'Batch processes': function(done) {
+    'name': 'Batch processes',
+    'fn': function(done) {
         var test = function (done) {
             switch (Math.round(Math.random())) {
                 case 0:

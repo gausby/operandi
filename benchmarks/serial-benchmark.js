@@ -3,7 +3,8 @@
 var serial = require('../lib/serial');
 
 module.exports = {
-    'Serial processes': function(done) {
+    'name': 'Serial processes',
+    'fn': function(done) {
         var test = function (done) {
             switch (Math.round(Math.random())) {
                 case 0:

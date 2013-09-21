@@ -5,6 +5,9 @@ var buster = require('buster'),
     batch = require('../lib/batch.js')
 ;
 
+var assert = buster.referee.assert;
+var refute = buster.referee.refute;
+
 buster.testCase('A batch process', {
     setUp: function () {
     },

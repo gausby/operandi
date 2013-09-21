@@ -5,6 +5,9 @@ var buster = require('buster'),
     parallel = require('../lib/parallel')
 ;
 
+var assert = buster.referee.assert;
+var refute = buster.referee.refute;
+
 buster.testCase('A parallel process', {
     'should process each function it gets': function (done) {
         var test = 0;

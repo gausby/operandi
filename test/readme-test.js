@@ -5,8 +5,8 @@ var buster = require('buster'),
     operandi = require('../lib/operandi.js')
 ;
 
-var assert = buster.assertions.assert;
-var refute = buster.assertions.refute;
+var assert = buster.referee.assert;
+var refute = buster.referee.refute;
 
 buster.testCase('Claims made in the README.md', {
     'eachSerial usage example': function (done) {
