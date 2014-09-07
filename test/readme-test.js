@@ -83,6 +83,34 @@ buster.testCase('Claims made in the README.md', {
         });
     },
 
+    'each result in callbacks example': function (done) {
+		var eachParallel = operandi.eachParallel;
+		eachParallel({a: 1, b: 2, c: 3}, function(obj, key, done) {
+			setTimeout(function() {
+				done(undefined, obj[key] * 2);
+			}, 10 * Math.random());
+		}, callback);
+
+		function callback(err, result) {
+			assert.equals({a: 2, b: 4, c: 6}, result);
+			done();
+		}
+	},
+
+    'each result in callbacks example for arrays': function (done) {
+		var eachParallel = operandi.eachParallel;
+		eachParallel([1, 2, 3], function(arr, index, done) {
+			setTimeout(function() {
+				done(undefined, arr[index] * 2);
+			}, 10 * Math.random());
+		}, callback);
+
+		function callback(err, result) {
+			assert.equals([2, 4, 6], result);
+			done();
+		}
+	},
+
     'error handling': function (done) {
         var serial = operandi.serial;
         var message = '';

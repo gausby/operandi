@@ -98,5 +98,27 @@ buster.testCase('A serial each process', {
             obj[key] = obj[key] + obj[key];
             done();
         }, callback);
-    }
+    },
+
+	'should pass the return values to the main callback as an argument': function (done) {
+		function callback (err, result) {
+			assert.equals(result, [0, 2, 4, 6, 8]);
+			done();
+		}
+
+		each([0, 1, 2, 3, 4], function(arr, index, done) {
+			done(undefined, arr[index] * 2);
+		}, callback);
+	},
+
+	'should pass the return values to the main callback as an argument and store them in the same keys': function (done) {
+		function callback (err, result) {
+			assert.equals(result, {a: 0, b: 2, c: 4, d: 6, e: 8});
+			done();
+		}
+
+		each({a: 0, b: 1, c: 2, d: 3, e: 4}, function(obj, index, done) {
+			done(undefined, obj[index] * 2);
+		}, callback);
+	}
 });

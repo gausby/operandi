@@ -115,6 +115,19 @@ buster.testCase('A parallel each process', {
             obj[key] = obj[key] + obj[key];
             done();
         }, callback);
-    }
+    },
+
+	'should pass the return values to the main callback as an argument in its original order': function (done) {
+		function callback (err, result) {
+			assert.equals(result, [0, 2, 4, 6, 8]);
+			done();
+		}
+
+		each([0, 1, 2, 3, 4], function(arr, index, done) {
+			setTimeout(function() {
+				done(undefined, arr[index] * 2);
+			}, 10 * Math.random());
+		}, callback);
+	},
 
 });
