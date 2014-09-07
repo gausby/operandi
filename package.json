@@ -1,26 +1,27 @@
 {
-    "name": "operandi",
-    "version": "1.0.0",
-    "description": "A workflow library for Node",
-    "author": "Martin Gausby <martin@gausby.dk>",
-    "repository": "git@github.com:gausby/operandi.git",
-    "main": "lib/operandi.js",
-    "dependencies": {
-    },
-    "devDependencies": {
-        "grunt": "0.4.1",
-        "grunt-buster": "0.2.1",
-        "grunt-connect": ">= 0.2.0",
-        "grunt-contrib-jshint": "0.6.4",
-        "grunt-contrib-watch": "0.5.3",
-        "grunt-contrib-yuidoc": ">= 0.5.0",
-        "grunt-clear": "0.2.1",
-        "grunt-benchmark": ">= 0.2.0",
-        "buster": "0.7.6"
-    },
-    "scripts": {
-        "start": "rlwrap node repl.js",
-        "test": "buster test"
-    },
-    "engines" : { "node" : ">=0.10.5" }
+  "name": "operandi",
+  "version": "1.1.0",
+  "description": "A workflow library for Node",
+  "author": "Martin Gausby <martin@gausby.dk>",
+  "repository": "git@github.com:gausby/operandi.git",
+  "main": "lib/operandi.js",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "0.4.1",
+    "grunt-buster": "0.2.1",
+    "grunt-connect": ">= 0.2.0",
+    "grunt-contrib-jshint": "0.6.4",
+    "grunt-contrib-watch": "0.5.3",
+    "grunt-contrib-yuidoc": ">= 0.5.0",
+    "grunt-clear": "0.2.1",
+    "grunt-benchmark": ">= 0.2.0",
+    "buster": "0.7.6"
+  },
+  "scripts": {
+    "start": "rlwrap node repl.js",
+    "test": "buster test"
+  },
+  "engines": {
+    "node": ">=0.10.5"
+  }
 }
