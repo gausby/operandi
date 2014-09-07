@@ -47,6 +47,23 @@ Will execute every function, one at a time, and run an optional callback functio
         console.log('done');
     });
 
+It is also possible to pass on arguments to the next function by giving them to the callback function.
+
+```js
+var serial = operandi.serial;
+serial([
+    function(done) {
+        done(undefined, 'bar');
+    },
+    function(foo, done) {
+        console.log(foo); // 'bar'
+        done();
+    }
+], done);
+```
+
+The first argument given to the callback should be an error object, or `undefined` if nothing went wrong. The last function in line will send its result to the main callback function.
+
 Use this when you need the tasks performed in precisely the order they are given.
 
 

@@ -135,5 +135,35 @@ buster.testCase('A serial process', {
                 return cb();
             }
         ], errorHandler);
-    }
+    },
+
+	'should pass the previous return value to the next in line as arguments': function (done) {
+		serial([
+			function(done) {
+				done(undefined, 'foo');
+			},
+			function(foo, done) {
+				assert.equals(foo, 'foo');
+				done(undefined, 'foo', 'bar', 'baz');
+			},
+			function(foo, bar, baz, done) {
+				assert.equals(foo, 'foo');
+				assert.equals(bar, 'bar');
+				assert.equals(baz, 'baz');
+				done();
+			}
+		], done);
+	},
+
+	'should pass the previous return value to the callback as arguments': function (done) {
+		function cb(err, foo) {
+			assert.equals(foo, 'foo');
+			done();
+		}
+		serial([
+			function(done) {
+				done(undefined, 'foo');
+			}
+		], cb);
+	}
 });

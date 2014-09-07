@@ -99,5 +99,4 @@ buster.testCase('A serial each process', {
             done();
         }, callback);
     }
-
 });

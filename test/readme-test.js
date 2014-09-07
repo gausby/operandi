@@ -9,6 +9,19 @@ var assert = buster.referee.assert;
 var refute = buster.referee.refute;
 
 buster.testCase('Claims made in the README.md', {
+    'serial usage example': function (done) {
+		var serial = operandi.serial;
+		serial([
+			function(done) {
+				done(undefined, 'bar');
+			},
+			function(foo, done) {
+				assert.equals(foo, 'bar');
+				done();
+			}
+		], done);
+	},
+
     'eachSerial usage example': function (done) {
         var eachSerial = operandi.eachSerial;
         var arr = [1, 2, 3, 4, 5, 6];
